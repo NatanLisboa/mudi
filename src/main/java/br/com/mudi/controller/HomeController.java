@@ -1,7 +1,10 @@
 package br.com.mudi.controller;
 
-import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,17 +14,17 @@ import br.com.mudi.model.Pedido;
 
 @Controller
 public class HomeController {
-
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	@GetMapping("/home")
 	public String home(Model model) {
 		
-		Pedido pedido = new Pedido();
-		pedido.setNomeProduto("Apple iPhone 12 Pro Max");
-		pedido.setUrlImagem("https://images-na.ssl-images-amazon.com/images/I/4174qKTcwyL._AC_.jpg");
-		pedido.setUrlProduto("https://www.amazon.com.br/Novo-Apple-iPhone-Azul-Pac%C3%ADfico/dp/B08NTNV4XN");
-		pedido.setDescricao("Uma descrição qualquer");
+		Query query = entityManager.createQuery("select p from Pedido p", Pedido.class);
+		@SuppressWarnings("unchecked")
+		List<Pedido> pedidos = query.getResultList();
 		
-		List<Pedido> pedidos = Arrays.asList(pedido, pedido, pedido);
 		model.addAttribute("pedidos", pedidos);
 		
 		return "home";
