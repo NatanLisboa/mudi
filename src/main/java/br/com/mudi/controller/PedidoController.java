@@ -22,21 +22,20 @@ public class PedidoController {
 	private PedidoRepository pedidoRepository;
 	
 	@GetMapping("formulario")
-	public String formulario() {
+	public String formulario(RequisicaoNovoPedido requisicao) {
 		return "pedido/formulario";
 	}
 	
 	@PostMapping("novo")
 	public String novo(@Valid RequisicaoNovoPedido requisicao, BindingResult result) {
 		
-		if (result.hasErrors()) {
-			return "pedido/formulario";
+		if (!result.hasErrors()) {
+			Pedido pedido = requisicao.toPedido();
+			pedidoRepository.save(pedido);
 		}
+				
+		return "pedido/formulario";
 		
-		Pedido pedido = requisicao.toPedido();
-		pedidoRepository.save(pedido);
-		
-		return "home";
 	}
 	
 	
